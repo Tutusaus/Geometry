@@ -10,25 +10,32 @@ class Axis():
         self.y_pos = self.pos + [0, self.length, 0]
         self.z_pos = self.pos + [0, 0, self.length]
         self.positions = [self.x_pos, self.y_pos, self.z_pos]
+        self.font = pygame.font.Font(None, 20)
 
-    def update(self, delta_time):
-        SPEED = 1
-        updated_vertices = True
-        """ start_pos = None
-        vector = (0, 0)
+    def update(self):
+
+        start_pos = None
+        vector = [0, 0, 0]
 
         for event in pygame.event.get():
-            if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
-                start_pos = event.pos
-            if event.type == pygame.MOUSEBUTTONUP and event.button == 1:
-                start_pos = None
+            # Detect left mouse button down
+            if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:  # Left button
+                updated_vertices = True
+                start_pos = event.pos  # Store the initial click position
+                self.pos = t.translation(self.pos, vector)
+                for point in self.positions:
+                    point = t.translation(point, vector)
+
+            # Detect left mouse button release
+            if event.type == pygame.MOUSEBUTTONUP and event.button == 1:  # Left button
+                start_pos = None  # Reset start position when button is released
             
-        if start_pos and pygame.mouse.get_pressed()[0]:
-            updated_vertices = True
-            current_pos = pygame.mouse.get_pos()
-            vector = (current_pos[0] - start_pos[0], current_pos[1] - start_pos[1])
-            self.positions = [t.translation(point, vector) for point in self.positions]
- """
+        # If the left mouse button is being held down
+        if start_pos:  # Left button is still pressed
+            current_pos = pygame.math.Vector2(pygame.mouse.get_pos())  # Get the current mouse position
+            for i in range(len(vector)-1):
+                vector[i] = current_pos[i] - start_pos[i]  # Calculate vector
+
         return updated_vertices
 
     """ def update(self, delta_time):
@@ -60,7 +67,13 @@ class Axis():
                 self.vertices[vertice] = t.rotation(self.vertices[vertice], self.alpha, self.beta, self.gamma) """
 
     def draw(self, display, delta_time):
-        if self.update(delta_time):
-            origin = t.xy_projection(self.pos) + [display.get_width() / 2, display.get_height() / 2]
-            for point in self.positions:
-                pygame.draw.line(display, "white", origin, t.xy_projection(point) + [display.get_width() / 2, display.get_height() / 2])
+        letter_offset = 5
+        if self.update():
+            origin = t.translation(t.xy_projection(self.pos), [display.get_width() / 2, display.get_height() / 2])
+            for point, letter in zip(self.positions, ['x', 'y', 'z']):
+                final_pos = t.translation(t.xy_projection(point), [display.get_width() / 2, display.get_height() / 2])
+                pygame.draw.line(display, "white", origin, final_pos)
+                text = self.font.render(letter, True, "white")
+                text_rect = text.get_rect(center=final_pos + letter_offset)
+                display.blit(text, text_rect)
+                

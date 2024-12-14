@@ -1,4 +1,5 @@
 import numpy as np
+import numpy.typing as npt
 
 def change_of_basis(*args):    
 
@@ -59,15 +60,16 @@ def change_of_basis(*args):
 
 
 
-def translation(point, vector):
+def translation(point: list, vector: list) -> npt.NDArray:
 
     """ 
     Description
     -----------
     
     This function applies a translation to the given point based on the provided vector
-    and is versatile enough to handle translations in n-dimensional vector spaces. KEEP IN MIND
-    that both parameters must have the same size. 
+    and is versatile enough to handle translations in n-dimensional vector spaces. If point
+    and vector don't have the same size, they must be broadcastable to a common shape
+    (which becomes the shape of the output).
     
     Example
     --------
@@ -78,14 +80,13 @@ def translation(point, vector):
 
     """
 
-    for i in range(len(point)):
-        vector[i] += point[i]
+    result = np.add(point, vector)
 
-    return np.array(vector)
-
+    return result
 
 
-def homothety(center, point, ratio = 1.01):
+
+def homothety(center: list, point: list, ratio: float = 1.01) -> npt.NDArray[np.float64]:
 
     """ 
     Description
@@ -101,20 +102,23 @@ def homothety(center, point, ratio = 1.01):
     [ 0 -4] # Homothety to the point [-1, -1] with center [-2, 2] and ratio 2.
 
     """
+
+    result = ratio*np.array(point) + (1-ratio)*np.array(center)
     
-    return ratio*np.array(point) + (1-ratio)*np.array(center)
+    return result
 
 
 
-def rotation(point, alpha, beta, gamma):
+def rotation(point: list, alpha: float, beta: float, gamma: float) -> npt.NDArray[np.float64]:
 
     """ 
      Description
     -----------
     
-    This function rotates a point in 3D space based on the specified values of alpha, beta, and gamma. Each of these
-    values represents the angle by which the point is rotated around the Z, Y, and X axes, respectively. In aviation
-    lingo, this movements are also called yaw, pitch and roll.
+    This function rotates a point in 3D space according to the specified angles alpha, beta, and gamma.
+    These angles correspond to counterclockwise rotations around the X, Y, and Z axes, respectively, when
+    viewed from the positive direction of each axis. In aviation lingo, this movements are also called roll,
+    pitch and yaw. Note in the examples the non-commutativity of rotation composition.
 
     Example
     --------
@@ -122,52 +126,59 @@ def rotation(point, alpha, beta, gamma):
 
     >>> x
     [ 0. -1. -1.]
+
+    >>> y = rotation(rotation(rotation([1, 1, 1], np.pi/2, 0, 0), 0, np.pi/2, 0), 0, 0, np.pi/2)
+
+    >>> y
+    [ 1.  1. -1.]
+
+    >>> z = rotation(rotation(rotation([1, 1, 1], 0, 0, np.pi/2), 0, np.pi/2, 0), np.pi/2, 0, 0)
+
+    >>> z
+    [ 1. -1.  1.]
 
     """
 
     roll_matrix = np.array([[1,             0,              0], 
-                            [0, np.cos(gamma), -np.sin(gamma)], 
-                            [0, np.sin(gamma),  np.cos(gamma)]])
-    yaw_matrix = np.array([[np.cos(alpha), -np.sin(alpha), 0],
-                           [np.sin(alpha),  np.cos(alpha), 0],
-                           [0            ,              0, 1]])
+                            [0, np.cos(alpha), -np.sin(alpha)], 
+                            [0, np.sin(alpha),  np.cos(alpha)]])
     pitch_matrix = np.array([[np.cos(beta), 0, np.sin(beta)],
                              [0            , 1,            0], 
                              [-np.sin(beta), 0, np.cos(beta)]])
+    yaw_matrix = np.array([[np.cos(gamma), -np.sin(gamma), 0],
+                           [np.sin(gamma),  np.cos(gamma), 0],
+                           [0            ,              0, 1]])
     
     rotation_matrix = yaw_matrix @ pitch_matrix @ roll_matrix
-    coords = rotation_matrix @ point
-    for i in range(len(coords)):
-        coords[i] = int(coords[i])
+    result = rotation_matrix @ point
 
-    return coords
+    return result
 
 
 
-def xy_projection(point):
+def xy_projection(point: list) -> npt.NDArray[np.float64]:
 
     """ 
      Description
     -----------
     
-    ************************************************************************
-    ************************************************************************
-    ************************************************************************
-    ************************************************************************
+    This function projects a point in 3D space onto the XY-plane.
+    This is also known as a parallel projection.
 
     Example
     --------
-    >>> x = rotation([1, 1, 1], np.pi/2, np.pi/2, -np.pi)
+    >>> x = xy_projection([3, 4, 5])
 
     >>> x
-    [ 0. -1. -1.]
+    [3 4]
 
     """
 
     xy_projection_matrix = np.array([[1, 0, 0], 
                                      [0, 1, 0], 
                                      [0, 0, 0]])
-    coords = xy_projection_matrix @ point
-    coords = coords[:-1]
+                                    
+    result = xy_projection_matrix @ point
+    result = result[:-1]
     
-    return coords
+    return result

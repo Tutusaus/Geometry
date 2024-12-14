@@ -1,6 +1,7 @@
-import pygame
+import transformations as t
 
-v = pygame.Vector2(3, 4)
-p = [4, 5, 5]
+point = [1, 2, 3]
+vector = np.array([30, 40])
+vector = vector + [0, 0, 0]
 
-print(v + p)
+print(t.translation(point, vector))

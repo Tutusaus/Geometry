@@ -25,6 +25,12 @@ while run:
         #quit game
         if event.type == pygame.QUIT:
             run = False
+        
+        if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+            abs_axis.update() = True
+
+        if event.type == pygame.MOUSEBUTTONUP and event.button == 1:
+            abs_axis.update() = False
 
     DISPLAY_SURF.fill("black")
 
