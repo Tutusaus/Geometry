@@ -14,12 +14,23 @@ class Axis():
         self.font = pygame.font.Font(None, 20)
         self.letter_offset = 5
 
-    def update(self, v):
-        pos_xy = t.translation(t.xy_projection(self.pos), v)
-        self.pos[:2] = pos_xy
-        for point in range(len(self.positions)):
-            positions_xy = t.translation(t.xy_projection(self.positions[point]), v)
-            self.positions[point][:2] = positions_xy
+    def update(self, display, event, v):
+        mouse_pos = t.translation(list(event.pos), [-display.get_width() / 2, -display.get_height() / 2])
+        print(mouse_pos)
+        if event.button == 1: # 2d translation along the xy-plane
+            self.pos[:2] = t.translation(t.xy_projection(self.pos), v)
+            for point in range(len(self.positions)):
+                self.positions[point][:2] = t.translation(t.xy_projection(self.positions[point]), v)
+        if event.button == 3: # space rotation
+            pass
+        if event.button == 4:
+            self.pos[:2] = t.homothety(mouse_pos, t.xy_projection(self.pos))
+            for i in range(len(self.positions)):
+                self.positions[i][:2] = t.homothety(mouse_pos, t.xy_projection(self.positions[i]))
+        if event.button == 5:
+            self.pos[:2] = t.homothety(mouse_pos, t.xy_projection(self.pos), 0.99)
+            for i in range(len(self.positions)):
+                self.positions[i][:2] = t.homothety(mouse_pos, t.xy_projection(self.positions[i]), 0.99)
 
     def draw(self, display, v):
         # This is what must be drawn always

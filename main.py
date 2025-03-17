@@ -29,21 +29,22 @@ while run:
         current_pos = pygame.math.Vector2(pygame.mouse.get_pos())  # Get the current mouse position
         vector = current_pos - start_pos
 
-    abs_axis.draw(DISPLAY_SURF, vector)
-
     # event loop
     for event in pygame.event.get():
         #quit game
         if event.type == pygame.QUIT:
             run = False
 
-        if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:  # Left button
-            start_pos = event.pos  # Store the initial click position
-            abs_axis.update(vector)
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            start_pos = event.pos
+            abs_axis.update(DISPLAY_SURF, event, vector)
 
         # Detect left mouse button release
-        if event.type == pygame.MOUSEBUTTONUP and event.button == 1:  # Left button
+        if event.type == pygame.MOUSEBUTTONUP:  # Left button
             start_pos = None  # Reset start position when button is released
+
+    abs_axis.draw(DISPLAY_SURF, vector)
+    print(abs_axis.pos, abs_axis.x_pos, abs_axis.y_pos, abs_axis.z_pos)
 
     pygame.display.update()
 
