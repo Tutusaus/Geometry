@@ -1,5 +1,6 @@
 import pygame
 import transformations as t
+import math
 
 class Axis():
 
@@ -16,13 +17,12 @@ class Axis():
 
     def update(self, display, event, v):
         mouse_pos = t.translation(list(event.pos), [-display.get_width() / 2, -display.get_height() / 2])
-        print(mouse_pos)
         if event.button == 1: # 2d translation along the xy-plane
             self.pos[:2] = t.translation(t.xy_projection(self.pos), v)
             for point in range(len(self.positions)):
                 self.positions[point][:2] = t.translation(t.xy_projection(self.positions[point]), v)
         if event.button == 3: # space rotation
-            pass
+            self.x_pos = t.rotation(self.x_pos, math.acos((self.x_pos[0]-v[0])/self.x_pos[0]), 0, 0)
         if event.button == 4:
             self.pos[:2] = t.homothety(mouse_pos, t.xy_projection(self.pos))
             for i in range(len(self.positions)):

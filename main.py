@@ -1,5 +1,4 @@
 import pygame
-from os.path import join
 
 import objects as o
 
@@ -44,8 +43,8 @@ while run:
             start_pos = None  # Reset start position when button is released
 
     abs_axis.draw(DISPLAY_SURF, vector)
-    print(abs_axis.pos, abs_axis.x_pos, abs_axis.y_pos, abs_axis.z_pos)
-
+    pygame.draw.circle(DISPLAY_SURF, 'white', [DISPLAY_SURF.get_width()/2, DISPLAY_SURF.get_height()/2], 2)
+    #print(abs_axis.pos, abs_axis.x_pos, abs_axis.y_pos, abs_axis.z_pos)
     pygame.display.update()
 
 pygame.quit()
