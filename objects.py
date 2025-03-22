@@ -21,13 +21,15 @@ class Axis():
             self.pos[:2] = t.translation(t.xy_projection(self.pos), v)
             for point in range(len(self.positions)):
                 self.positions[point][:2] = t.translation(t.xy_projection(self.positions[point]), v)
-        if event.button == 3: # space rotation
-            self.x_pos = t.rotation(self.x_pos, math.acos((self.x_pos[0]-v[0])/self.x_pos[0]), 0, 0)
-        if event.button == 4:
+        elif event.button == 3: # space rotation
+            """ self.pos = t.rotation(self.pos, math.acos(v[1]/math.dist(self.pos, self.z_pos)), -math.asin(v[0]/math.dist(self.pos, self.z_pos)), math.asin(v[1]/math.dist(self.pos, self.x_pos)))
+            for point in range(len(self.positions)):
+                self.positions[point] = t.rotation(self.positions[point], math.acos(v[1]/math.dist(self.pos, self.z_pos)), -math.asin(v[0]/math.dist(self.pos, self.z_pos)), math.asin(v[1]/math.dist(self.pos, self.x_pos))) """
+        elif event.button == 4:
             self.pos[:2] = t.homothety(mouse_pos, t.xy_projection(self.pos))
             for i in range(len(self.positions)):
                 self.positions[i][:2] = t.homothety(mouse_pos, t.xy_projection(self.positions[i]))
-        if event.button == 5:
+        elif event.button == 5:
             self.pos[:2] = t.homothety(mouse_pos, t.xy_projection(self.pos), 0.99)
             for i in range(len(self.positions)):
                 self.positions[i][:2] = t.homothety(mouse_pos, t.xy_projection(self.positions[i]), 0.99)
