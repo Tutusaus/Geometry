@@ -1,5 +1,4 @@
 import pygame
-
 import objects as o
 
 WINDOW_WIDTH = 640
@@ -16,6 +15,7 @@ start_pos = None
 vector = pygame.math.Vector2([0, 0])
 
 abs_axis = o.Axis([0, 0, 0])
+#cube = o.Cube(100)
 
 run = True
 while run:
@@ -44,6 +44,11 @@ while run:
 
     abs_axis.draw(DISPLAY_SURF, vector)
     #print(abs_axis.pos, abs_axis.x_pos, abs_axis.y_pos, abs_axis.z_pos)
+
+    #cube.update(dt)
+    
+    #cube.draw(DISPLAY_SURF, (DISPLAY_SURF.get_width()/2, DISPLAY_SURF.get_height()/2))
+
     pygame.display.update()
 
 pygame.quit()
