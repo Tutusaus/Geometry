@@ -22,12 +22,6 @@ while run:
     # delta-time to achieve constant pixel/second speed of objects on display regardless of hardware specs
     dt = clock.tick(FPS) / 1000
 
-    DISPLAY_SURF.fill("black")
-
-    if start_pos:  # Left button is still pressed
-        current_pos = pygame.math.Vector2(pygame.mouse.get_pos())  # Get the current mouse position
-        vector = current_pos - start_pos
-
     # event loop
     for event in pygame.event.get():
         #quit game
@@ -42,6 +36,12 @@ while run:
         if event.type == pygame.MOUSEBUTTONUP:  # Left button
             start_pos = None  # Reset start position when button is released
 
+    if start_pos:  # Left button is still pressed
+        current_pos = pygame.math.Vector2(pygame.mouse.get_pos())  # Get the current mouse position
+        vector = current_pos - start_pos
+
+    DISPLAY_SURF.fill("black")
+    
     abs_axis.draw(DISPLAY_SURF, vector)
     #print(abs_axis.pos, abs_axis.x_pos, abs_axis.y_pos, abs_axis.z_pos)
 
