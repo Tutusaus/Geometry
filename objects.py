@@ -13,7 +13,7 @@ class Axis():
         self.z_pos = self.pos + [0, 0, self.length]
         self.positions = [self.x_pos, self.y_pos, self.z_pos]
         
-        self.font = pygame.font.Font(None, 20)
+        self.font = pygame.font.Font(None, 13)
         self.letter_offset = 5
 
     def update(self, display, event, v):
@@ -38,10 +38,10 @@ class Axis():
     def draw(self, display, v):
         # This is what must be drawn always
         origin = t.translation(t.translation(t.xy_projection(self.pos), [display.get_width() / 2, display.get_height() / 2]), v)
-        for point, letter in zip(self.positions, ['x', 'y', 'z']):
+        for point, letter in zip(self.positions, self.positions):
             final_pos = t.translation(t.translation(t.xy_projection(point), [display.get_width() / 2, display.get_height() / 2]), v)
             pygame.draw.line(display, "white", origin, final_pos)
-            letter = self.font.render(letter, True, "white")
+            letter = self.font.render(str(letter), True, "white")
             letter_rect = letter.get_rect(center=final_pos + self.letter_offset)
             display.blit(letter, letter_rect)
             

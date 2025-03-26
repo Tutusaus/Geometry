@@ -1,5 +1,6 @@
 import pygame
 import objects as o
+import transformations as t
 
 WINDOW_WIDTH = 640
 WINDOW_HEIGHT = 480
@@ -30,12 +31,13 @@ while run:
 
         if event.type == pygame.MOUSEBUTTONDOWN:
             start_pos = event.pos
-            abs_axis.update(DISPLAY_SURF, event, vector)
 
         # Detect left mouse button release
         if event.type == pygame.MOUSEBUTTONUP:  # Left button
+            abs_axis.update(DISPLAY_SURF, event, vector)
+            vector = [0, 0]
             start_pos = None  # Reset start position when button is released
-
+            
     if start_pos:  # Left button is still pressed
         current_pos = pygame.math.Vector2(pygame.mouse.get_pos())  # Get the current mouse position
         vector = current_pos - start_pos
@@ -43,6 +45,11 @@ while run:
     DISPLAY_SURF.fill("black")
     
     abs_axis.draw(DISPLAY_SURF, vector)
+    #Faig una translació amb lclick, deixo anar el lclick i això hauria d'actualitzar les posicions dels punts del meu eix de coordenades (abs_axis).
+    # Podem provar això fent: lclick -> moure el mouse -> automàticament homotècia.
+    pygame.draw.line(DISPLAY_SURF, 'red', pygame.mouse.get_pos(), t.translation(abs_axis.pos[:2], [DISPLAY_SURF.get_width()/2, DISPLAY_SURF.get_height()/2]))
+    for point in abs_axis.positions:
+        pygame.draw.line(DISPLAY_SURF, 'red', pygame.mouse.get_pos(), t.translation(point[:2], [DISPLAY_SURF.get_width()/2, DISPLAY_SURF.get_height()/2]))
     #print(abs_axis.pos, abs_axis.x_pos, abs_axis.y_pos, abs_axis.z_pos)
 
     #cube.update(dt)
