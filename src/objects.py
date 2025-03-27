@@ -1,7 +1,7 @@
 import pygame
-import transformations as t
+from lib import transformations as t
 import numpy as np
-import math
+import math as m
 
 class Axis():
 
@@ -16,34 +16,51 @@ class Axis():
         self.font = pygame.font.Font(None, 13)
         self.letter_offset = 5
 
-    def update(self, display, event, v):
-        mouse_pos = t.translation(list(event.pos), [-display.get_width() / 2, -display.get_height() / 2])
-        if event.button == 1: # 2d translation along the xy-plane
-            self.pos[:2] = t.translation(t.xy_projection(self.pos), v)
+    def update(self, display, mouse):
+        mouse_pos = t.translation(list(mouse.start_pos), [-display.get_width() / 2, -display.get_height() / 2])
+        if mouse.button == 1: # 2d translation along the xy-plane
+            self.pos[:2] = t.translation(t.xy_projection(self.pos), mouse.direction)
             for point in range(len(self.positions)):
-                self.positions[point][:2] = t.translation(t.xy_projection(self.positions[point]), v)
-        elif event.button == 3: # space rotation
-            """ self.pos = t.rotation(self.pos, math.acos(v[1]/math.dist(self.pos, self.z_pos)), -math.asin(v[0]/math.dist(self.pos, self.z_pos)), math.asin(v[1]/math.dist(self.pos, self.x_pos)))
+                self.positions[point][:2] = t.translation(t.xy_projection(self.positions[point]), mouse.direction)
+        elif mouse.button == 3: # space rotation
+            self.pos = t.rotation(self.pos, m.acos(m.copysign(1, mouse.direction[1])*min(abs(mouse.direction[1]), 50)/50), -m.asin(m.copysign(1, mouse.direction[0])*min(abs(mouse.direction[0]), 50)/50), m.asin(m.copysign(1, mouse.direction[1])*min(abs(mouse.direction[1]), 50)/50))
             for point in range(len(self.positions)):
-                self.positions[point] = t.rotation(self.positions[point], math.acos(v[1]/math.dist(self.pos, self.z_pos)), -math.asin(v[0]/math.dist(self.pos, self.z_pos)), math.asin(v[1]/math.dist(self.pos, self.x_pos))) """
-        elif event.button == 4:
+                self.positions[point] = t.rotation(self.positions[point], m.acos(m.copysign(1, mouse.direction[1])*min(abs(mouse.direction[1]), 50)/50), -m.asin(m.copysign(1, mouse.direction[0])*min(abs(mouse.direction[0]), 50)/50), m.asin(m.copysign(1, mouse.direction[1])*min(abs(mouse.direction[1]), 50)/50))
+        elif mouse.button == 4:
             self.pos[:2] = t.homothety(mouse_pos, t.xy_projection(self.pos))
             for i in range(len(self.positions)):
                 self.positions[i][:2] = t.homothety(mouse_pos, t.xy_projection(self.positions[i]))
-        elif event.button == 5:
+        elif mouse.button == 5:
             self.pos[:2] = t.homothety(mouse_pos, t.xy_projection(self.pos), 0.99)
             for i in range(len(self.positions)):
                 self.positions[i][:2] = t.homothety(mouse_pos, t.xy_projection(self.positions[i]), 0.99)
 
-    def draw(self, display, v):
+    def draw(self, display, mouse):
         # This is what must be drawn always
-        origin = t.translation(t.translation(t.xy_projection(self.pos), [display.get_width() / 2, display.get_height() / 2]), v)
-        for point, letter in zip(self.positions, self.positions):
-            final_pos = t.translation(t.translation(t.xy_projection(point), [display.get_width() / 2, display.get_height() / 2]), v)
-            pygame.draw.line(display, "white", origin, final_pos)
-            letter = self.font.render(str(letter), True, "white")
-            letter_rect = letter.get_rect(center=final_pos + self.letter_offset)
-            display.blit(letter, letter_rect)
+        if mouse.button == 1:
+            origin = t.translation(t.translation(t.xy_projection(self.pos), [display.get_width() / 2, display.get_height() / 2]), mouse.direction)
+            for point, letter in zip(self.positions, self.positions):
+                final_pos = t.translation(t.translation(t.xy_projection(point), [display.get_width() / 2, display.get_height() / 2]), mouse.direction)
+                pygame.draw.line(display, "white", origin, final_pos)
+                letter = self.font.render(str(letter), True, "white")
+                letter_rect = letter.get_rect(center=final_pos + self.letter_offset)
+                display.blit(letter, letter_rect)
+        elif mouse.button == 3:
+            origin = t.translation(t.xy_projection(t.rotation(self.pos, m.acos(m.copysign(1, mouse.direction[1])*min(abs(mouse.direction[1]), 50)/50), -m.asin(m.copysign(1, mouse.direction[0])*min(abs(mouse.direction[0]), 50)/50), m.asin(m.copysign(1, mouse.direction[1])*min(abs(mouse.direction[1]), 50)/50))), [display.get_width() / 2, display.get_height() / 2])
+            for point, letter in zip(self.positions, self.positions):
+                final_pos = t.translation(t.xy_projection(t.rotation(point, m.acos(m.copysign(1, mouse.direction[1])*min(abs(mouse.direction[1]), 50)/50), -m.asin(m.copysign(1, mouse.direction[0])*min(abs(mouse.direction[0]), 50)/50), m.asin(m.copysign(1, mouse.direction[1])*min(abs(mouse.direction[1]), 50)/50))), [display.get_width() / 2, display.get_height() / 2])
+                pygame.draw.line(display, "white", origin, final_pos)
+                letter = self.font.render(str(letter), True, "white")
+                letter_rect = letter.get_rect(center=final_pos + self.letter_offset)
+                display.blit(letter, letter_rect)
+        else:
+            origin = t.translation(t.xy_projection(self.pos), [display.get_width() / 2, display.get_height() / 2])
+            for point, letter in zip(self.positions, self.positions):
+                final_pos = t.translation(t.xy_projection(point), [display.get_width() / 2, display.get_height() / 2])
+                pygame.draw.line(display, "white", origin, final_pos)
+                letter = self.font.render(str(letter), True, "white")
+                letter_rect = letter.get_rect(center=final_pos + self.letter_offset)
+                display.blit(letter, letter_rect)
             
 """ class Cube():
     # V - E + F
