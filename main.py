@@ -1,6 +1,5 @@
 import pygame
 from src import objects as o
-from lib import transformations as t
 import inputs.mouse as m
 
 WINDOW_WIDTH = 640
@@ -8,7 +7,8 @@ WINDOW_HEIGHT = 480
 
 #general setup
 pygame.init()
-DISPLAY_SURF = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
+DISPLAY_SURF_MID = pygame.math.Vector2([WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2])
+DISPLAY_SURF = pygame.display.set_mode(2*DISPLAY_SURF_MID)
 pygame.display.set_caption('Geometry')
 clock = pygame.time.Clock()
 FPS = 120
@@ -44,7 +44,7 @@ while run:
 
     DISPLAY_SURF.fill("black")
     # He de dibuixar qualsevol cosa a partir d'aquesta línia en avall
-    
+    pygame.draw.circle(DISPLAY_SURF, 'red', DISPLAY_SURF_MID, 2)
     axis.draw(DISPLAY_SURF, mouse)
 
     #cube.update(dt)

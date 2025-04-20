@@ -1,3 +1,6 @@
 1.- Falta implementar geometria projectiva per aconseguir la perspectiva, per això potser caldria modificar la llibreria
 transformations (o no). En tot cas, ara mateix estem en geometria euclidiana.
 2.- Falta implementar les rotacions a l'espai amb click dret correctament.
+3.- En el mon dels ordinadors, les transformacions afins juntament amb les projeccions poden ser representades mitjançant
+matrius 4x4, això ajuda a poder representar totes les transformacions anteriors com a matrius i la composició com a producte
+de matrius.

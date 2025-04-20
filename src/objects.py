@@ -1,6 +1,5 @@
 import pygame
 from lib import transformations as t
-import numpy as np
 import math as m
 
 class Axis():
@@ -13,7 +12,7 @@ class Axis():
         self.z_pos = self.pos + [0, 0, self.length]
         self.positions = [self.x_pos, self.y_pos, self.z_pos]
         
-        self.font = pygame.font.Font(None, 13)
+        self.font = pygame.font.Font(None, 20)
         self.letter_offset = 5
 
     def update(self, display, mouse):
@@ -39,26 +38,26 @@ class Axis():
         # This is what must be drawn always
         if mouse.button == 1:
             origin = t.translation(t.translation(t.xy_projection(self.pos), [display.get_width() / 2, display.get_height() / 2]), mouse.direction)
-            for point, letter in zip(self.positions, self.positions):
+            for point, letter in zip(self.positions, ['x', 'y', 'z']):
                 final_pos = t.translation(t.translation(t.xy_projection(point), [display.get_width() / 2, display.get_height() / 2]), mouse.direction)
                 pygame.draw.line(display, "white", origin, final_pos)
-                letter = self.font.render(str(letter), True, "white")
+                letter = self.font.render(letter, True, "white")
                 letter_rect = letter.get_rect(center=final_pos + self.letter_offset)
                 display.blit(letter, letter_rect)
         elif mouse.button == 3:
             origin = t.translation(t.xy_projection(t.rotation(self.pos, m.acos(m.copysign(1, mouse.direction[1])*min(abs(mouse.direction[1]), 50)/50), -m.asin(m.copysign(1, mouse.direction[0])*min(abs(mouse.direction[0]), 50)/50), m.asin(m.copysign(1, mouse.direction[1])*min(abs(mouse.direction[1]), 50)/50))), [display.get_width() / 2, display.get_height() / 2])
-            for point, letter in zip(self.positions, self.positions):
+            for point, letter in zip(self.positions, ['x', 'y', 'z']):
                 final_pos = t.translation(t.xy_projection(t.rotation(point, m.acos(m.copysign(1, mouse.direction[1])*min(abs(mouse.direction[1]), 50)/50), -m.asin(m.copysign(1, mouse.direction[0])*min(abs(mouse.direction[0]), 50)/50), m.asin(m.copysign(1, mouse.direction[1])*min(abs(mouse.direction[1]), 50)/50))), [display.get_width() / 2, display.get_height() / 2])
                 pygame.draw.line(display, "white", origin, final_pos)
-                letter = self.font.render(str(letter), True, "white")
+                letter = self.font.render(letter, True, "white")
                 letter_rect = letter.get_rect(center=final_pos + self.letter_offset)
                 display.blit(letter, letter_rect)
         else:
             origin = t.translation(t.xy_projection(self.pos), [display.get_width() / 2, display.get_height() / 2])
-            for point, letter in zip(self.positions, self.positions):
+            for point, letter in zip(self.positions, ['x', 'y', 'z']):
                 final_pos = t.translation(t.xy_projection(point), [display.get_width() / 2, display.get_height() / 2])
                 pygame.draw.line(display, "white", origin, final_pos)
-                letter = self.font.render(str(letter), True, "white")
+                letter = self.font.render(letter, True, "white")
                 letter_rect = letter.get_rect(center=final_pos + self.letter_offset)
                 display.blit(letter, letter_rect)
             
@@ -181,9 +180,9 @@ class Axis():
                     pygame.draw.polygon(display, color, lst)
 
             case _:
-                print("Error. Please introduce a correct object to draw ('vertices', 'edges', 'faces').")
+                print("Error. Please introduce a correct object to draw ('vertices', 'edges', 'faces').") """
 
-class Torus():
+""" class Torus():
     r_density = 16
     R_density = 16
 
